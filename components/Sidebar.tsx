@@ -37,7 +37,7 @@ const Sidebar = ({ user }: SidebarProps) => {
                   fill
                   className={cn({ "brightness-[3] invert-0": isActive })}
                   // the fill property is particularly useful for creating responsive images that automatically adjust to the size of their parent containers.
-                  // adjust the brightness and invert the colours if isActive
+                  // adjust the brightness and invert the colours if isActive is true
                 />
               </div>
               <p className={cn("sidebar-label", { "!text-white": isActive })}>
