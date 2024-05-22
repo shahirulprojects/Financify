@@ -25,10 +25,10 @@ const BankCard = ({
             <div className="flex justify-between">
               <h1 className="text-12 font-semibold text-white">{userName}</h1>
               {/* this is the expiration date */}
-              <h2 className="text-12 font-semibold text-white">** / **</h2>
+              <h2 className="text-12 font-semibold text-white">●● / ●●</h2>
             </div>
             <p className="text-14 font-semibold tracking-[1.1px] text-white">
-              **** **** **** <span className="text-16">${account.mask}</span>
+              ●●●● ●●●● ●●●● <span className="text-16">1234</span>
               {/* mask is the last 4 numbers of the account */}
             </p>
           </article>
@@ -40,6 +40,7 @@ const BankCard = ({
             width={45}
             height={32}
             alt="mastercard"
+            className="ml-5"
           />
         </div>
         <Image
@@ -48,8 +49,10 @@ const BankCard = ({
           height={190}
           alt="lines"
           className="absolute top-0 left-0"
+          // absolute means that it doesn't push other elements around and they don't push it either.
         />
       </Link>
+      {/* COPY */}
     </div>
   );
 };
