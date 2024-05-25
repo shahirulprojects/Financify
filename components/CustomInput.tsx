@@ -25,7 +25,7 @@ const CustomInput = ({ control, name, label, placeholder }: CustomInput) => {
               <Input
                 placeholder={placeholder}
                 className="input-class"
-                type={name === "password" ? "password" : "text"} // if name is triple equal to password then the input will be a type of password, meaning that it will censor the input
+                type={name === "password" ? "password" : "text"} // if name is equal to password then the input will be a type of password, meaning that it will censor the input
                 {...field}
               />
             </FormControl>
