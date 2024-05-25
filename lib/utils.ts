@@ -195,7 +195,19 @@ export const getTransactionStatus = (date: Date) => {
   return date > twoDaysAgo ? "Processing" : "Success";
 };
 
-export const authFormSchema = z.object({
-  email: z.string().email(), // check if it is a type of email
-  password: z.string().min(8),
-});
+export const authFormSchema = (type: string) =>
+  z.object({
+    //we do it like this because if not, we cannot sign in using the sign in page because it is still waiting for other fields to be filled where in relaity there is no need to do that since we are in sign in page
+    //sign up
+    firstName: type === "sign-in" ? z.string().optional() : z.string(),
+    lastName: type === "sign-in" ? z.string().optional() : z.string(),
+    address1: type === "sign-in" ? z.string().optional() : z.string().max(100),
+    state: type === "sign-in" ? z.string().optional() : z.string().max(35),
+    postalCode: type === "sign-in" ? z.string().optional() : z.string().max(10),
+    dateOfBirth: type === "sign-in" ? z.string().optional() : z.string(),
+    ssn: type === "sign-in" ? z.string().optional() : z.string().min(12),
+
+    // both
+    email: z.string().email(), // check if it is a type of email
+    password: z.string().min(8),
+  });

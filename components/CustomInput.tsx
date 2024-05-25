@@ -5,9 +5,12 @@ import { Control, FieldPath } from "react-hook-form";
 import { z } from "zod";
 import { authFormSchema } from "@/lib/utils";
 
+// we use sign-up because we want to use all of the fields and sign up kan ada semua fields
+const formSchema = authFormSchema("sign-up");
+
 interface CustomInput {
-  control: Control<z.infer<typeof authFormSchema>>;
-  name: FieldPath<z.infer<typeof authFormSchema>>; // untuk tahu name apa je yang wujud dekat authFormSchema tu. Kalau name tu tak wujud, dia akan kasi error
+  control: Control<z.infer<typeof formSchema>>;
+  name: FieldPath<z.infer<typeof formSchema>>; // untuk tahu name apa je yang wujud dekat authFormSchema tu. Kalau name tu tak wujud, dia akan kasi error
   label: string;
   placeholder: string;
 }
