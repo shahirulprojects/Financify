@@ -20,8 +20,10 @@ import { Input } from "@/components/ui/input";
 import CustomInput from "./CustomInput";
 import { authFormSchema } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const AuthForm = ({ type }: { type: string }) => {
+  const router = useRouter();
   const [user, setUser] = useState(null); // at the start the user data wil be null
   const [isLoading, setIsLoading] = useState(false);
 
@@ -38,13 +40,32 @@ const AuthForm = ({ type }: { type: string }) => {
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setIsLoading(true);
-    console.log(values);
-    setIsLoading(false);
-  }
+    try {
+      // Sign up with Appwrite and create plaid token
+
+      if (type === "sign-up") {
+        // pass in all the attributes from the "data"
+        // const newUser=await signUp(data)
+        // setUser(newUser)
+      }
+
+      if (type === "sign-in") {
+        // const response = await signIn({
+        //   // because we only need email and password for sign in
+        //   email: data.email,
+        //   password: data.password,
+        // });
+        // // if we get a response back, we will navigate to the home page
+        // if (response) router.push("/");
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false); // no matter if it succeed or fail,we want to turn off the isLoading
+    }
+  };
   return (
     <section className="auth-form">
       <header className="flex flex-col gap-5 md:gap-8">
@@ -84,48 +105,62 @@ const AuthForm = ({ type }: { type: string }) => {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               {type === "sign-up" && (
                 <>
-                  <CustomInput
-                    control={form.control}
-                    name="firstName"
-                    label="First Name"
-                    placeholder="Enter your first name"
-                  />
-                  <CustomInput
-                    control={form.control}
-                    name="lastName"
-                    label="Last Name"
-                    placeholder="Enter your last name"
-                  />
+                  <div className="flex gap-4">
+                    <CustomInput
+                      control={form.control}
+                      name="firstName"
+                      label="First Name"
+                      placeholder="Enter first name"
+                    />
+                    <CustomInput
+                      control={form.control}
+                      name="lastName"
+                      label="Last Name"
+                      placeholder="Enter last name"
+                    />
+                  </div>
+
                   <CustomInput
                     control={form.control}
                     name="address1"
                     label="Address"
-                    placeholder="Enter your specific address"
+                    placeholder="Enter specific address"
                   />
                   <CustomInput
                     control={form.control}
-                    name="state"
-                    label="State"
-                    placeholder="Example: Perak"
+                    name="city"
+                    label="City"
+                    placeholder="Enter city"
                   />
-                  <CustomInput
-                    control={form.control}
-                    name="postalCode"
-                    label="Postal Code"
-                    placeholder="Example: 35400"
-                  />
-                  <CustomInput
-                    control={form.control}
-                    name="dateOfBirth"
-                    label="Date Of Birth"
-                    placeholder="YYYY-MM-DD"
-                  />
-                  <CustomInput
-                    control={form.control}
-                    name="ssn"
-                    label="IC Number"
-                    placeholder='Exclude "-" sign '
-                  />
+                  <div className="flex gap-4">
+                    <CustomInput
+                      control={form.control}
+                      name="state"
+                      label="State"
+                      placeholder="Enter state"
+                    />
+                    <CustomInput
+                      control={form.control}
+                      name="postalCode"
+                      label="Postal Code"
+                      placeholder="Enter postal code"
+                    />
+                  </div>
+
+                  <div className="flex gap-4">
+                    <CustomInput
+                      control={form.control}
+                      name="dateOfBirth"
+                      label="Date Of Birth"
+                      placeholder="YYYY-MM-DD"
+                    />
+                    <CustomInput
+                      control={form.control}
+                      name="ssn"
+                      label="IC Number"
+                      placeholder="Enter IC number "
+                    />
+                  </div>
                 </>
               )}
 
@@ -133,13 +168,13 @@ const AuthForm = ({ type }: { type: string }) => {
                 control={form.control}
                 name="email"
                 label="Email"
-                placeholder="Enter your email"
+                placeholder="Enter email"
               />
               <CustomInput
                 control={form.control}
                 name="password"
                 label="Password"
-                placeholder="Enter your password"
+                placeholder="Enter password"
               />
 
               <div className="flex flex-col gap-4">

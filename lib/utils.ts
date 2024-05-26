@@ -197,17 +197,42 @@ export const getTransactionStatus = (date: Date) => {
 
 export const authFormSchema = (type: string) =>
   z.object({
-    //we do it like this because if not, we cannot sign in using the sign in page because it is still waiting for other fields to be filled where in relaity there is no need to do that since we are in sign in page
-    //sign up
-    firstName: type === "sign-in" ? z.string().optional() : z.string(),
-    lastName: type === "sign-in" ? z.string().optional() : z.string(),
-    address1: type === "sign-in" ? z.string().optional() : z.string().max(100),
-    state: type === "sign-in" ? z.string().optional() : z.string().max(35),
-    postalCode: type === "sign-in" ? z.string().optional() : z.string().max(10),
-    dateOfBirth: type === "sign-in" ? z.string().optional() : z.string(),
-    ssn: type === "sign-in" ? z.string().optional() : z.string().min(12),
+    // we do it like this because if not, we cannot sign in using the sign in page because it is still waiting for other fields to be filled where in reality there is no need to do that since we are in sign in page
+    // sign up
+    firstName:
+      type === "sign-in"
+        ? z.string().optional()
+        : z.string().nonempty("First name is required"),
+    lastName:
+      type === "sign-in"
+        ? z.string().optional()
+        : z.string().nonempty("Last name is required"),
+    address1:
+      type === "sign-in"
+        ? z.string().optional()
+        : z.string().max(100, "Address cannot exceed 100 characters"),
+    city:
+      type === "sign-in"
+        ? z.string().optional()
+        : z.string().max(100, "City cannot exceed 100 characters"),
+    state:
+      type === "sign-in"
+        ? z.string().optional()
+        : z.string().max(35, "State cannot exceed 35 characters"),
+    postalCode:
+      type === "sign-in"
+        ? z.string().optional()
+        : z.string().max(10, "Postal code cannot exceed 10 characters"),
+    dateOfBirth:
+      type === "sign-in"
+        ? z.string().optional()
+        : z.string().nonempty("Date of birth is required"),
+    ssn:
+      type === "sign-in"
+        ? z.string().optional()
+        : z.string().min(12, "SSN must be at least 12 characters"),
 
     // both
-    email: z.string().email(), // check if it is a type of email
-    password: z.string().min(8),
+    email: z.string().email("Invalid email address"), // check if it is a type of email
+    password: z.string().min(8, "Password must be at least 8 characters long"),
   });
