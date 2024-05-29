@@ -53,13 +53,13 @@ const AuthForm = ({ type }: { type: string }) => {
       }
 
       if (type === "sign-in") {
-        const response = await signIn({
-          // because we only need email and password for sign in
-          email: data.email,
-          password: data.password,
-        });
-        // if we get a response back, we will navigate to the home page
-        if (response) router.push("/");
+        // const response = await signIn({
+        //   // because we only need email and password for sign in
+        //   email: data.email,
+        //   password: data.password,
+        // });
+        // // if we get a response back, we will navigate to the home page
+        // if (response) router.push("/");
       }
     } catch (error) {
       console.log(error);
