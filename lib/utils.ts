@@ -230,7 +230,7 @@ export const authFormSchema = (type: string) =>
     ssn:
       type === "sign-in"
         ? z.string().optional()
-        : z.string().min(12, "SSN must be at least 12 characters"),
+        : z.string().min(12, "IC must be at least 12 characters"),
 
     // both
     email: z.string().email("Invalid email address"), // check if it is a type of email
