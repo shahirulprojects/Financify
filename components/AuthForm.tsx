@@ -64,7 +64,7 @@ const AuthForm = ({ type }: { type: string }) => {
     } catch (error) {
       console.log(error);
     } finally {
-      setIsLoading(false); // no matter if it succeeds or fails, we want to turn off the isLoading
+      setIsLoading(false); // no matter if it succeed or fail, we want to turn off the isLoading
     }
   };
   return (
