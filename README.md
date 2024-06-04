@@ -30,7 +30,7 @@ Built with Next.js, Financify is a comprehensive financial management platform d
 
 - Next.js
 - TypeScript
-- TailwindCSS
+- Tailwind CSS
 - ShadCN
 - React Hook Form
 - Zod
