@@ -41,15 +41,15 @@ Built with Next.js, Financify is a comprehensive financial management platform d
 
 ## <a name="features">🔋 Features</a>
 
-👉 **Authentication**: An ultra-secure SSR authentication with proper validations and authorization
+👉 **Authentication**: An ultra-secure SSR authentication with proper validations and authorization.
 
-👉 **Connect Banks**: Integrates with Plaid for multiple bank account linking
+👉 **Connect Banks**: Integrates with Plaid for multiple bank account linking.
 
-👉 **Home Page**: Shows general overview of user account with total balance from all connected banks, recent transactions, money spent on different categories, etc
+👉 **Home Page**: Shows general overview of user account with total balance from all connected banks, recent transactions, money spent on different categories, etc.
 
-👉 **My Banks**: Check the complete list of all connected banks with respective balances, account details
+👉 **My Banks**: Check the complete list of all connected banks with respective balances, account details.
 
-👉 **Transaction History**: Includes pagination and filtering options for viewing transaction history of different banks
+👉 **Transaction History**: Includes pagination and filtering options for viewing transaction history of different banks.
 
 👉 **Real-time Updates**: Reflects changes across all relevant pages upon connecting new bank accounts.
 
@@ -118,7 +118,7 @@ DWOLLA_ENV=sandbox
 
 ```
 
-Replace the placeholder values with your actual respective account credentials. You can obtain these credentials by signing up on the [Appwrite](https://appwrite.io/?utm_source=youtube&utm_content=reactnative&ref=JSmastery), [Plaid](https://plaid.com/) and [Dwolla](https://www.dwolla.com/)
+Replace the placeholder values with your actual respective account credentials. You can obtain these credentials by signing up on the [Appwrite](https://appwrite.io/), [Plaid](https://plaid.com/) and [Dwolla](https://www.dwolla.com/)
 
 **Running the Project**
 
