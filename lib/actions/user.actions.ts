@@ -4,7 +4,7 @@ import { createAdminClient, createSessionClient } from "../appwrite";
 import { cookies } from "next/headers";
 import { parseStringify } from "../utils";
 
-// because we want to do server action so we have to use "use server"
+// because we want to do server action so we have to use the "use server"
 
 export const signIn = async () => {
   try {
