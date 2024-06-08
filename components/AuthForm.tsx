@@ -205,7 +205,7 @@ const AuthForm = ({ type }: { type: string }) => {
                 : "Already have an account?"}
             </p>
             <Link
-              href={type === "sign-in" ? "/sign-up" : "sign-in"}
+              href={type === "sign-in" ? "/sign-up" : "/sign-in"}
               className="form-link"
             >
               {type === "sign-in" ? "Sign Up" : "Sign In"}

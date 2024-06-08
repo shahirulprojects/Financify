@@ -61,3 +61,18 @@ export async function getLoggedInUser() {
     return null;
   }
 }
+
+export const logoutAccount = async () => {
+  try {
+    // get the account from the current session
+    const { account } = await createSessionClient();
+
+    // delete the session
+    cookies().delete("appwrite-session");
+
+    // delete the session for the current account
+    await account.deleteSession("current");
+  } catch (error) {
+    return null;
+  }
+};
