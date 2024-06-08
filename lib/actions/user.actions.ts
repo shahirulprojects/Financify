@@ -6,9 +6,14 @@ import { parseStringify } from "../utils";
 
 // because we want to do server action so we have to use the "use server"
 
-export const signIn = async () => {
+export const signIn = async ({ email, password }: signInProps) => {
   try {
     // Mutation / Database / Make fetch call
+    const { account } = await createAdminClient();
+
+    const response = await account.createEmailPasswordSession(email, password);
+
+    return parseStringify(response);
   } catch (error) {
     console.error("Error", error);
   }
@@ -28,7 +33,7 @@ export const signUp = async (userData: SignUpParams) => {
       `${firstName} ${lastName}`
     );
 
-    // Create a session
+    // Create a session. This session can be seen at the appwrite tab at the user's info at the user collection collection
     const session = await account.createEmailPasswordSession(email, password);
 
     cookies().set("appwrite-session", session.secret, {
@@ -48,7 +53,10 @@ export const signUp = async (userData: SignUpParams) => {
 export async function getLoggedInUser() {
   try {
     const { account } = await createSessionClient();
-    return await account.get();
+
+    const user = await account.get();
+
+    return parseStringify(user);
   } catch (error) {
     return null;
   }
