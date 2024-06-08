@@ -20,6 +20,7 @@ export const signUp = async (userData: SignUpParams) => {
     // Create a user account
     const { account } = await createAdminClient();
 
+    // this is for creating a user information in the database.The ID, email, password, firstName, and lastName are the only ones that will be shown in the user collection in the database
     const newUserAccount = await account.create(
       ID.unique(),
       email,
