@@ -2,9 +2,15 @@
 import { ID } from "node-appwrite";
 import { createAdminClient, createSessionClient } from "../appwrite";
 import { cookies } from "next/headers";
-import { parseStringify } from "../utils";
-import { CountryCode, Products } from "plaid";
+import { encryptId, parseStringify } from "../utils";
+import {
+  CountryCode,
+  ProcessorTokenCreateRequest,
+  ProcessorTokenCreateRequestProcessorEnum,
+  Products,
+} from "plaid";
 import { plaidClient } from "../plaid";
+import { revalidatePath } from "next/cache";
 
 // because we want to do server action so we have to use the "use server"
 
@@ -96,5 +102,74 @@ export const createLinkToken = async (user: User) => {
     return parseStringify({ linkToken: response.data.link_token });
   } catch (error) {
     console.log(error);
+  }
+};
+
+export const exchangePublicToken = async ({
+  publicToken,
+  user,
+}: exchangePublicTokenProps) => {
+  try {
+    // exchange public token for access token and item ID
+    const response = await plaidClient.itemPublicTokenExchange({
+      public_token: publicToken,
+    });
+
+    // extract the access token and the item id from the response that we have just gotten
+    const accessToken = response.data.access_token;
+    const itemId = response.data.item_id;
+
+    // get account information from Plaid using the access token
+    const accountsResponse = await plaidClient.accountsGet({
+      access_token: accessToken,
+    });
+
+    const accountData = accountsResponse.data.accounts[0];
+
+    // once we have the access token and the accountData, we can create a processor token for Dwolla
+    // create a processor token for Dwolla using the access token and account ID (accountData contains account ID)
+
+    const request: ProcessorTokenCreateRequest = {
+      access_token: accessToken,
+      account_id: accountData.account_id,
+      processor: "dwolla" as ProcessorTokenCreateRequestProcessorEnum,
+    };
+
+    const processorTokenResponse = await plaidClient.processorTokenCreate(
+      request
+    );
+    const processorToken = processorTokenResponse.data.processor_token;
+
+    // create a funding source URL for the account using the Dwolla customer ID,processor token, and bank name
+    // think of this as connecting the payment processing functionality to our specific bank account so that it can send and receive funds
+    // the addFundingSource is a special server action coming from Dwolla
+    const fundingSourceUrl = await addFundingSource({
+      dwollaCustomerId: user.dwollaCustomerId,
+      processorToken,
+      bankName: accountData.name,
+    });
+
+    // if the funding source URL is not created, throw an error
+    if (!fundingSourceUrl) throw Error;
+
+    // if the funding source URL successfully created, we will create a bank account using the user ID,item ID, account ID, access token, funding source URL, and sharable ID so users can transfer money between different accounts
+    await createBankAccount({
+      userId: user.$id,
+      bankId: itemId,
+      accountId: accountData.account_id,
+      accessToken,
+      fundingSourceUrl,
+      sharableId: encryptId(accountData.account_id),
+    });
+
+    // revalidate the path to reflect the changes (will be redirected to the home page)
+    revalidatePath("/");
+
+    // return a success message
+    return parseStringify({
+      publicTokenExchange: "complete",
+    });
+  } catch (error) {
+    console.log("An error occured while creating exchanging token:", error);
   }
 };

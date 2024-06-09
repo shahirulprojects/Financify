@@ -1,3 +1,12 @@
+// Flow:
+// 1.Create a link token
+// 2.Pass generated linktoken to PlaidLink
+// 3.Trigger flow of connecting bank account to application through PlaidLink
+// 4.On success,PlaidLink will provide temporary public token
+// 5.Exchange public token with permanent access token
+// 6.Exchange access token to get bank account information
+// 7.Processor(in this case we use Dwolla). Dwolla is a payment processor that we use to process our money through Plaid
+
 import React, { useCallback, useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import {
