@@ -1,8 +1,9 @@
 "use server";
+// because we want to do server action so we have to use the "use server"
 import { ID } from "node-appwrite";
 import { createAdminClient, createSessionClient } from "../appwrite";
 import { cookies } from "next/headers";
-import { encryptId, parseStringify } from "../utils";
+import { encryptId, extractCustomerIdFromUrl, parseStringify } from "../utils";
 import {
   CountryCode,
   ProcessorTokenCreateRequest,
@@ -11,8 +12,14 @@ import {
 } from "plaid";
 import { plaidClient } from "../plaid";
 import { revalidatePath } from "next/cache";
+import { addFundingSource, createDwollaCustomer } from "./dwolla.actions";
 
-// because we want to do server action so we have to use the "use server"
+// instead of typing process.env for each environment variables, we can do it like this
+const {
+  APPWRITE_DATABASE_ID: DATABASE_ID, // how to read it: APPWRITE_DATABASE_ID will be renamed as DATABASE_ID and it is coming from process.env
+  APPWRITE_USER_COLLECTION_ID: USER_COLLECTION_ID,
+  APPWRITE_BANK_COLLECTION_ID: BANK_COLLECTION_ID,
+} = process.env;
 
 export const signIn = async ({ email, password }: signInProps) => {
   try {
@@ -29,19 +36,40 @@ export const signIn = async ({ email, password }: signInProps) => {
 
 export const signUp = async (userData: SignUpParams) => {
   const { email, password, firstName, lastName } = userData;
+
+  let newUserAccount;
+
   try {
     // Create a user account
     const { account } = await createAdminClient();
 
     // this is for creating a user information in the database.The ID, email, password, firstName, and lastName are the only ones that will be shown in the user collection in the database
-    const newUserAccount = await account.create(
+    newUserAccount = await account.create(
       ID.unique(),
       email,
       password,
       `${firstName} ${lastName}`
     );
 
-    // Create a session. This session can be seen at the appwrite tab at the user's info at the user collection collection
+    // tips: when making a function, make sure that it is atomic meaning that if it succeeds, it has to succeed until the end.If it fails, it has to fail right there and must not continue
+    // this is what we doing here, we check if each step is successful or not first before continuing to the next step
+
+    // if the newUseraccount failed to be created, it will throw an error and exits the function
+    if (!newUserAccount) throw new Error("Error creating user");
+
+    // if the newUseraccount creation is successful, we will create a dwolla customer url
+    const dwollaCustomerUrl = await createDwollaCustomer({
+      ...userData, // spread the userData
+      type: "personal", // set the type to personal
+    });
+
+    // if the dwollaCustomerUrl failed to be created, it will throw an error and exits the function
+    if (!dwollaCustomerUrl) throw new Error("Error creating Dwolla customer");
+
+    // if the dwollaCustomerUrl creation is successful, we will extract the dwolla customer id
+    const dwollaCustomerId = extractCustomerIdFromUrl(dwollaCustomerUrl);
+
+    // create a session. This session can be seen at the appwrite tab at the user's info at the user collection collection
     const session = await account.createEmailPasswordSession(email, password);
 
     cookies().set("appwrite-session", session.secret, {
@@ -103,6 +131,36 @@ export const createLinkToken = async (user: User) => {
   } catch (error) {
     console.log(error);
   }
+};
+
+export const createBankAccount = async ({
+  userId,
+  bankId,
+  accountId,
+  accessToken,
+  fundingSourceUrl,
+  sharableId,
+}: createBankAccountProps) => {
+  try {
+    // create a bank account document within appwrite (meaning that we create a banking record in our database)
+    const { database } = await createAdminClient();
+
+    const bankAccount = await database.createDocument(
+      DATABASE_ID!, // the ! is to let typescript know that it exists and not undefined
+      BANK_COLLECTION_ID!,
+      ID.unique(),
+      {
+        userId,
+        bankId,
+        accountId,
+        accessToken,
+        fundingSourceUrl,
+        sharableId,
+      }
+    );
+
+    return parseStringify(bankAccount);
+  } catch (error) {}
 };
 
 export const exchangePublicToken = async ({
