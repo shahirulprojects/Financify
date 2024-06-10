@@ -37,6 +37,7 @@ Built with Next.js, Financify is a comprehensive financial management platform d
 - Plaid
 - Dwolla
 - Chart.js
+- Sentry
 
 ## <a name="features">🔋 Features</a>
 
