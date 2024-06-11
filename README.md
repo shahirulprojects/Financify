@@ -116,6 +116,10 @@ DWOLLA_SECRET=
 DWOLLA_BASE_URL=https://api-sandbox.dwolla.com
 DWOLLA_ENV=sandbox
 
+#SENTRY
+SENTRY_DSN= 
+NEXT_PUBLIC_SENTRY_DSN= 
+
 ```
 
 Replace the placeholder values with your actual respective account credentials. You can obtain these credentials by signing up on the [Appwrite](https://appwrite.io/), [Plaid](https://plaid.com/) and [Dwolla](https://www.dwolla.com/)
@@ -158,6 +162,10 @@ DWOLLA_KEY=
 DWOLLA_SECRET=
 DWOLLA_BASE_URL=https://api-sandbox.dwolla.com
 DWOLLA_ENV=sandbox
+
+#SENTRY
+SENTRY_DSN= 
+NEXT_PUBLIC_SENTRY_DSN= 
 ```
 
 </details>
