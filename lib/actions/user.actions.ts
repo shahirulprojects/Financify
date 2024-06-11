@@ -1,6 +1,6 @@
 "use server";
 // because we want to do server action so we have to use the "use server"
-import { ID } from "node-appwrite";
+import { ID, Query } from "node-appwrite";
 import { createAdminClient, createSessionClient } from "../appwrite";
 import { cookies } from "next/headers";
 import { encryptId, extractCustomerIdFromUrl, parseStringify } from "../utils";
@@ -21,14 +21,42 @@ const {
   APPWRITE_BANK_COLLECTION_ID: BANK_COLLECTION_ID,
 } = process.env;
 
+export const getUserInfo = async ({ userId }: getUserInfoProps) => {
+  try {
+    // get access to the database using createAdminClient. createAdminClient is like an administrative access, which allows us to get access to the database
+    const { database } = await createAdminClient();
+
+    // list out all of the documents from a specific database id that contains a user collection and we will only get the documents that are equal to the userId
+    const user = await database.listDocuments(
+      DATABASE_ID!,
+      USER_COLLECTION_ID!,
+      [Query.equal("userId", [userId])]
+    );
+
+    return parseStringify(user.documents[0]); // returning the documents from the user collection
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const signIn = async ({ email, password }: signInProps) => {
   try {
     // Mutation / Database / Make fetch call
     const { account } = await createAdminClient();
+    // create a session. This session can be seen at the appwrite tab at the auth. Do note that the session will be stored in the auth, not database
+    const session = await account.createEmailPasswordSession(email, password);
 
-    const response = await account.createEmailPasswordSession(email, password);
+    cookies().set("appwrite-session", session.secret, {
+      path: "/",
+      httpOnly: true,
+      sameSite: "strict",
+      secure: true,
+    });
 
-    return parseStringify(response);
+    // getting the full info about the user from the database
+    const user = await getUserInfo({ userId: session.userId });
+
+    return parseStringify(user);
   } catch (error) {
     console.error("Error", error);
   }
@@ -104,7 +132,11 @@ export async function getLoggedInUser() {
   try {
     const { account } = await createSessionClient();
 
-    const user = await account.get();
+    // getting result from a session
+    const result = await account.get();
+
+    // fetch user from the database
+    const user = await getUserInfo({ userId: result.$id }); // pass the userId of a value of result id
 
     return parseStringify(user);
   } catch (error) {
@@ -243,5 +275,41 @@ export const exchangePublicToken = async ({
     });
   } catch (error) {
     console.log("An error occured while creating exchanging token:", error);
+  }
+};
+
+export const getBanks = async ({ userId }: getBanksProps) => {
+  try {
+    // get access to the database using createAdminClient. createAdminClient is like an administrative access, which allows us to get access to the database
+    const { database } = await createAdminClient();
+
+    // list out all of the documents from a specific database id that contains a bank collection and we will only get the documents that are equal to the userId
+    const banks = await database.listDocuments(
+      DATABASE_ID!,
+      BANK_COLLECTION_ID!,
+      [Query.equal("userId", [userId])]
+    );
+
+    return parseStringify(banks.documents); // returning the documents from the bank collection
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getBank = async ({ documentId }: getBankProps) => {
+  try {
+    // get access to the database using createAdminClient. createAdminClient is like an administrative access, which allows us to get access to the database
+    const { database } = await createAdminClient();
+
+    // list out all of the documents from a specific database id that contains a bank collection and we will only get the documents that are equal to the documentId
+    const bank = await database.listDocuments(
+      DATABASE_ID!,
+      BANK_COLLECTION_ID!,
+      [Query.equal("$id", [documentId])]
+    );
+
+    return parseStringify(bank.documents[0]); // returning the documents from the bank collection
+  } catch (error) {
+    console.log(error);
   }
 };
