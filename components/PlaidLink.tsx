@@ -15,7 +15,10 @@ import {
   usePlaidLink,
 } from "react-plaid-link";
 import { useRouter } from "next/navigation";
-import { createLinkToken } from "@/lib/actions/user.actions";
+import {
+  createLinkToken,
+  exchangePublicToken,
+} from "@/lib/actions/user.actions";
 
 const PlaidLink = ({ user, variant }: PlaidLinkProps) => {
   const router = useRouter();
@@ -35,12 +38,12 @@ const PlaidLink = ({ user, variant }: PlaidLinkProps) => {
 
   // assigned the onSuccess to the type PlaidLinkOnSuccess
   const onSuccess = useCallback<PlaidLinkOnSuccess>(
-    async (public_token: String) => {
+    async (public_token: string) => {
       // exchange the public token which will allow us to exchange the existing access token for a token that allows us to do a lot of different banking stuffs
-      // await exchangePublicToken({
-      //     publicToken:public_token,
-      //     user,
-      // })
+      await exchangePublicToken({
+        publicToken: public_token,
+        user,
+      });
 
       // after we exchange the public token, we want to push to the homepage as as sign that we successfully link our bank account
       router.push("/");

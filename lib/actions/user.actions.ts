@@ -34,14 +34,15 @@ export const signIn = async ({ email, password }: signInProps) => {
   }
 };
 
-export const signUp = async (userData: SignUpParams) => {
-  const { email, password, firstName, lastName } = userData;
+export const signUp = async ({ password, ...userData }: SignUpParams) => {
+  // we do password, ...userData because we dont want to include the password in or document, therefore we have to extract it from the userData
+  const { email, firstName, lastName } = userData;
 
   let newUserAccount;
 
   try {
     // Create a user account
-    const { account } = await createAdminClient();
+    const { account, database } = await createAdminClient();
 
     // this is for creating a user information in the database.The ID, email, password, firstName, and lastName are the only ones that will be shown in the user collection in the database
     newUserAccount = await account.create(
@@ -69,7 +70,20 @@ export const signUp = async (userData: SignUpParams) => {
     // if the dwollaCustomerUrl creation is successful, we will extract the dwolla customer id
     const dwollaCustomerId = extractCustomerIdFromUrl(dwollaCustomerUrl);
 
-    // create a session. This session can be seen at the appwrite tab at the user's info at the user collection collection
+    const newUser = await database.createDocument(
+      DATABASE_ID!, // specify which database (in this case the financify database)
+      USER_COLLECTION_ID!, // specify which collection that we will add the document
+      ID.unique(), // assigned an id for the document
+      // specify what information that we need in the document
+      {
+        ...userData,
+        userId: newUserAccount.$id,
+        dwollaCustomerId,
+        dwollaCustomerUrl,
+      }
+    );
+
+    // create a session. This session can be seen at the appwrite tab at the auth. Do note that the session will be stored in the auth, not database
     const session = await account.createEmailPasswordSession(email, password);
 
     cookies().set("appwrite-session", session.secret, {
@@ -80,7 +94,7 @@ export const signUp = async (userData: SignUpParams) => {
     });
 
     // we do it like this because in NextJS we cannot passed a large object through server action, we have to stringify it first
-    return parseStringify(newUserAccount);
+    return parseStringify(newUser);
   } catch (error) {
     console.error("Error", error);
   }
@@ -119,7 +133,7 @@ export const createLinkToken = async (user: User) => {
       user: {
         client_user_id: user.$id,
       },
-      client_name: user.name,
+      client_name: `${user.firstName}${user.lastName}`,
       products: ["auth"] as Products[],
       language: "en",
       country_codes: ["US"] as CountryCode[],
