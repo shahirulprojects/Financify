@@ -1,4 +1,5 @@
 import HeaderBox from "@/components/HeaderBox";
+import RecentTransactions from "@/components/RecentTransactions";
 import RightSidebar from "@/components/RightSidebar";
 import TotalBalanceBox from "@/components/TotalBalanceBox";
 import { getAccount, getAccounts } from "@/lib/actions/bank.actions";
@@ -6,6 +7,8 @@ import { getLoggedInUser } from "@/lib/actions/user.actions";
 
 // from the searchParams, we can further destructure the id and the page
 const Home = async ({ searchParams: { id, page } }: SearchParamProps) => {
+  // convert the page into a number as it is actually a string or set 1 by default
+  const currentPage = Number(page as string) || 1;
   const loggedIn = await getLoggedInUser();
 
   // get data for many accounts
@@ -39,7 +42,12 @@ const Home = async ({ searchParams: { id, page } }: SearchParamProps) => {
             totalCurrentBalance={accounts?.totalCurrentBalance} // total current balance that we have
           />
         </header>
-        RECENT TRANSACTIONS
+        <RecentTransactions
+          accounts={accountsData}
+          transactions={account?.transactions}
+          appwriteItemId={appwriteItemId}
+          page={currentPage}
+        />
       </div>
       <RightSidebar
         user={loggedIn}

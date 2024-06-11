@@ -189,7 +189,7 @@ export function decryptId(id: string) {
 
 export const getTransactionStatus = (date: Date) => {
   const today = new Date();
-  const twoDaysAgo = new Date(today);
+  const twoDaysAgo = new Date(today); // because typically it takes one or two days to process transactions in the sandbox mode
   twoDaysAgo.setDate(today.getDate() - 2);
 
   return date > twoDaysAgo ? "Processing" : "Success";
