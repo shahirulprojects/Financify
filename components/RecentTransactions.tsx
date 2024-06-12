@@ -22,12 +22,13 @@ const RecentTransactions = ({
     indexOfFirstTransaction,
     indexOfLastTransaction
   );
+
   return (
     <section className="recent-transactions">
       <header className="flex items-center justify-between">
         <h2 className="recent-transactions-label">Recent Transactions</h2>
         <Link
-          href={`/transactions-history/?id=${appwriteItemId}`} // display the full transactions history for each specific bank (so if we select savings account and click view all it will redirect us to the transactions history page and display the full transactions history for the savings account)
+          href={`/transaction-history/?id=${appwriteItemId}`} // display the full transactions history for each specific bank (so if we select savings account and click view all it will redirect us to the transactions history page and display the full transactions history for the savings account)
           className="view-all-btn"
         >
           View all
