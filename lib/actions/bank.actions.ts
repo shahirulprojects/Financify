@@ -1,4 +1,4 @@
-"use server";
+"use server"; // it is important to use "use server" or else we will get an error that says "fs" which stands for file system (the fs error usually happens in node application and server applications)
 
 import {
   ACHClass,
@@ -114,6 +114,7 @@ export const getAccount = async ({ appwriteItemId }: getAccountProps) => {
       appwriteItemId: bank.$id,
     };
 
+    // all transactions combine the fake sandbox transactions and the transfer transactions (both sender and receiver)
     // sort transactions by date such that the most recent transaction is first
     const allTransactions = [...transactions, ...transferTransactions].sort(
       (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()

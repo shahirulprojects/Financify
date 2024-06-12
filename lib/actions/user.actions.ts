@@ -1,5 +1,6 @@
 "use server";
 // because we want to do server action so we have to use the "use server"
+// it is important to use "use server" or else we will get an error that says "fs" which stands for file system (the fs error usually happens in node application and server applications)
 import { ID, Query } from "node-appwrite";
 import { createAdminClient, createSessionClient } from "../appwrite";
 import { cookies } from "next/headers";
@@ -307,6 +308,29 @@ export const getBank = async ({ documentId }: getBankProps) => {
       BANK_COLLECTION_ID!,
       [Query.equal("$id", [documentId])]
     );
+
+    return parseStringify(bank.documents[0]); // returning the documents from the bank collection
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getBankByAccountId = async ({
+  accountId,
+}: getBankByAccountIdProps) => {
+  try {
+    // get access to the database using createAdminClient. createAdminClient is like an administrative access, which allows us to get access to the database
+    const { database } = await createAdminClient();
+
+    // list out all of the documents from a specific database id that contains a bank collection and we will only get the documents that are equal to the accountId
+    const bank = await database.listDocuments(
+      DATABASE_ID!,
+      BANK_COLLECTION_ID!,
+      [Query.equal("accountId", [accountId])]
+    );
+
+    // return null if bank does not exist
+    if (bank.total !== 1) return null;
 
     return parseStringify(bank.documents[0]); // returning the documents from the bank collection
   } catch (error) {

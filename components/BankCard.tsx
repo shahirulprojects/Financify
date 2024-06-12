@@ -54,6 +54,7 @@ const BankCard = ({
           // absolute means that it doesn't push other elements around and they don't push it either.
         />
       </Link>
+      <p className="my-5 font-semibold text-center">{account.name}</p>
       {/* Ability to copy the account id so that other people can transfer money to us  */}
       {showBalance && <Copy title={account?.sharableId} />}
     </div>
