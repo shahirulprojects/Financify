@@ -17,7 +17,7 @@ const BankCard = ({
       >
         <div className="bank-card_content">
           <div>
-            <h1 className="text-16 font-semibold text-white">{userName}</h1>
+            <h1 className="text-16 font-semibold text-white">{account.name}</h1>
             <p className="font-ibm-plex-serif font-black text-white">
               {formatAmount(account.currentBalance)}
             </p>
@@ -54,7 +54,6 @@ const BankCard = ({
           // absolute means that it doesn't push other elements around and they don't push it either.
         />
       </Link>
-      <p className="my-5 font-semibold text-center">{account.name}</p>
       {/* Ability to copy the account id so that other people can transfer money to us  */}
       {showBalance && <Copy title={account?.sharableId} />}
     </div>
