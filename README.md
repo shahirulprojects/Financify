@@ -22,8 +22,7 @@
 
 ## <a name="introduction">🤖 Introduction</a>
 
-Built with Next.js, Financify is a comprehensive financial management platform delivered via a secure Software-as-a-Service (SaaS) model. It centralizes financial data from multiple bank accounts, offering real-time transaction tracking and facilitating seamless money transfers between platform users. This empowers users to gain a holistic understanding of their financial health and make informed decisions to achieve their financial goals.
-
+Built with Next.js, Financify is a a secure banking application that serves as a comprehensive financial management platform. This app centralizes financial data from multiple bank accounts, provides real-time transaction tracking, and identifies top spending categories. It also facilitates seamless money transfers and enables users to connect to multiple banks, empowering them to understand their financial health and make informed decisions to achieve their financial goals.
 ## <a name="tech-stack">⚙️ Tech Stack</a>
 
 - Next.js
