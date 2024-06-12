@@ -57,6 +57,26 @@ const RightSidebar = ({ user, transactions, banks }: RightSidebarProps) => {
                 />
               </div>
             )}
+            {banks[2] && (
+              <div className="absolute right-0 top-8 z-0 w-[90%]">
+                <BankCard
+                  key={banks[2].$id}
+                  account={banks[2]}
+                  userName={`${user.firstName} ${user.lastName}`}
+                  showBalance={false}
+                />
+              </div>
+            )}
+            {banks[3] && (
+              <div className="absolute right-0 top-8 z-0 w-[90%]">
+                <BankCard
+                  key={banks[3].$id}
+                  account={banks[3]}
+                  userName={`${user.firstName} ${user.lastName}`}
+                  showBalance={false}
+                />
+              </div>
+            )}
           </div>
         )}
       </section>
