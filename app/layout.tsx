@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic"; // meaning that it will always try to get dynamic data when it can, therefore it will not try to render statically
+
 import type { Metadata } from "next";
 import { Inter, IBM_Plex_Serif } from "next/font/google";
 import "./globals.css";
