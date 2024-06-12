@@ -11,11 +11,15 @@ export default function RootLayout({
 
       <div className="auth-asset">
         <div>
+          <h2 className="text-xl ml-[400px] font-bold mb-7 justify-center items-center">
+            Banking, Digitized for You.
+          </h2>
           <Image
-            src="/icons/financifyrobot.png"
+            src="/icons/financify-auth.png"
             alt="Auth image"
-            width={500}
-            height={500}
+            width={900}
+            height={900}
+            className="ml-[400px]"
           />
         </div>
       </div>
